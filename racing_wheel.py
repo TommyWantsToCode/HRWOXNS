@@ -9,6 +9,10 @@ RACING_WHEEL_HEADER_CONTROL_STATE = array('B', [32, 0])
 RACING_WHEEL_HEADER_HOME_STATE = array('B', [7, 32])
 RACING_WHEEL_HEADER_HEARTBEAT = array('B', [3, 32])
 
+# Threshold for trigger, switch triggers are not analog (0 - 1024)
+RACING_WHEEL_BRAKE_THRESHOLD = 512
+RACING_WHEEL_THROTTLE_THRESHOLD = 512
+
 from joycontrol.controller_state import ControllerState, button_push, button_press, button_release
 
 # Translator between XBOX and Switch
@@ -36,8 +40,8 @@ class RacingWheel:
         self.btn_home = False
 
         # LSB is the same as break, RSB is the same as throttle
-        self.pedal_brake = float(0)
-        self.pedal_throttle = float(0)
+        self.pedal_brake = False
+        self.pedal_throttle = False
 
         # L and R buttons
         self.btn_ldb = False
@@ -107,12 +111,9 @@ class RacingWheel:
                 await self.handleButton('btn_lb', 'l', hexData_lr_dir & 0b1000000)
                 await self.handleButton('btn_rb', 'r', hexData_lr_dir & 0b10000000)
 
-            print(int(hexData[6]))
-            print(int(hexData[7]))
-            print(hexData[7] * 255 + hexData[6])
-            print('---------')
-            #print( str(( int(hexData[6]) << 8) | int(hexData[7]))))
-
+            # Pedals with analog to digital conversion
+            await self.handleButton('pedal_brake', 'zl', hexData[7] * 256 + hexData[6] > RACING_WHEEL_BRAKE_THRESHOLD)
+            await self.handleButton('pedal_throttle', 'zr', hexData[9] * 256 + hexData[8] > RACING_WHEEL_BRAKE_THRESHOLD)
 
             # Start button
             await self.handleButton('btn_start', 'capture', hexData[18] & 0b1)
