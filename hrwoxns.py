@@ -171,7 +171,7 @@ async def start_hori_emulation(controller_state: ControllerState):
     # waits until controller is fully connected
     await controller_state.connect()
 
-    ainput(prompt='Please connect your racing wheel and keep it in mode #2 on the green profile with default settings... Press <enter> to stop.')
+    await ainput(prompt='Please connect your racing wheel and keep it in mode #2 on the green profile with default settings... Press <enter> to stop.')
 
     print('Searching for USB Hori Racing Wheel Overdrive for Xbox | S...')
 
