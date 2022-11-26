@@ -3,7 +3,7 @@
 import asyncio
 
 # Expected serial messages headers
-RACING_WHEEL_HEADER_CONTROL_STATE = [32, 0]
+RACING_WHEEL_HEADER_CONTROL_STATE = array('B', [32, 0])
 RACING_WHEEL_HEADER_HOME_STATE = [7, 32]
 RACING_WHEEL_HEADER_HEARTBEAT = [3, 32]
 
