@@ -52,6 +52,24 @@ class RacingWheel:
         self.btn_menu = False
         self.btn_start = False
 
+    async def handleButton(self, btn_name, mappedNintendoButtons, newStatus):
+
+        # Only act if the new status is different
+        if getattr(self, btn_name) != newStatus:
+
+            # Saves the new state
+            setattr(self, btn_name, newStatus)
+
+            # Ensures controller conection via bluetooth
+            await controller_state.connect()
+
+            # Presses or releases button on nintendo
+            if newStatus:
+                await button_press(controller_state, mappedNintendoButtons)
+            else
+                await button_release(controller_state, mappedNintendoButtons)
+            print(newStatus)
+
     async def handle(self, hexData):
 
         # Gets header from message
@@ -62,19 +80,7 @@ class RacingWheel:
             print("controller state")
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
             
-            if hexData[4] & 0b1:
-
-                if not self.btn_home:
-                    self.btn_home = True
-                    print("Home presionado")
-
-            else:
-
-                if self.btn_home:
-                    self.btn_home = False
-                    print("Home soltado")
-
-
+            await handleButton(self, 'btn_home', 'home', hexData[4] & 0b1)
 
         elif hexHeader != RACING_WHEEL_HEADER_HEARTBEAT:
             print("Unknown header from USB device: " + str(hexHeader) + " with data: " + str(hexData))
