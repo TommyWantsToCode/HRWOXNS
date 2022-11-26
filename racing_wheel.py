@@ -64,4 +64,5 @@ class RacingWheel:
         elif hexHeader == RACING_WHEEL_HEADER_HEARTBEAT:
             print("Heartbeat")
         else:
-            print("Unknown header from USB device: " str(hexHeader) + " with data: " + str(hexData))
+            print("Unknown header from USB device: " + str(hexHeader) + " with data: " + str(hexData))
+            print(hexHeader)
