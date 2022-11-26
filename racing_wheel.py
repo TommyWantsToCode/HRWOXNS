@@ -3,7 +3,7 @@
 import asyncio
 
 # Expected serial messages headers
-RACING_WHEEL_HEADER_CONTROL_STATE = [32, 0]
+RACING_WHEEL_HEADER_CONTROL_STATE = b'\x20\x00\'
 RACING_WHEEL_HEADER_HOME_STATE = [7, 32]
 RACING_WHEEL_HEADER_HEARTBEAT = [3, 32]
 
@@ -63,5 +63,5 @@ class RacingWheel:
             print("home state")
         elif hexHeader == RACING_WHEEL_HEADER_HEARTBEAT:
             print("Heartbeat")
-        else:
-            print("Unknown data from USB device: " + str(hexData))
+        else:)
+            print("Unknown header from USB device: " str(hexHeader) + " with data: " + str(hexData))
