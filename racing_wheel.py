@@ -86,10 +86,10 @@ class RacingWheel:
                 await self.handleButton('btn_menu', 'plus', last_hexData_abxy_actions & 0b100)
                 await self.handleButton('btn_change_view', 'minus', last_hexData_abxy_actions & 0b1000)
 
-                await self.handleButton('btn_a', 'b', hexData_lr_dir & 0b10000)
-                await self.handleButton('btn_b', 'a', hexData_lr_dir & 0b100000)
-                await self.handleButton('btn_x', 'y', hexData_lr_dir & 0b1000000)
-                await self.handleButton('btn_y', 'x', hexData_lr_dir & 0b10000000)
+                await self.handleButton('btn_a', 'b', last_hexData_abxy_actions & 0b10000)
+                await self.handleButton('btn_b', 'a', last_hexData_abxy_actions & 0b100000)
+                await self.handleButton('btn_x', 'y', last_hexData_abxy_actions & 0b1000000)
+                await self.handleButton('btn_y', 'x', last_hexData_abxy_actions & 0b10000000)
 
 
             hexData_lr_dir = hexData[5];
