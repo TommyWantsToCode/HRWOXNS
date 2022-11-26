@@ -80,7 +80,7 @@ class RacingWheel:
             print("controller state")
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
             
-            await self.handleButton(self, 'btn_home', 'home', hexData[4] & 0b1)
+            await self.handleButton('btn_home', 'home', hexData[4] & 0b1)
 
         elif hexHeader != RACING_WHEEL_HEADER_HEARTBEAT:
             print("Unknown header from USB device: " + str(hexHeader) + " with data: " + str(hexData))
