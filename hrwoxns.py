@@ -135,6 +135,21 @@ async def test_controller_buttons(controller_state: ControllerState):
     # go back to home
     await button_push(controller_state, 'home')
 
+def usbRead(devices, endpoint):
+    """
+    Reads hexadecimal data from an USB endpoint
+    """
+    answer = devices.read(endpoint.bEndpointAddress, endpoint.wMaxPacketSize)
+    print('read: ' + ''.join([ '%02X' %x for x in answer]) + '\n')
+    return answer
+
+def usbWrite(devices, endpoint, hexData):
+    """
+    Writes hexadecimal data to an USB endpoint
+    """
+    devices.write(endpoint.bEndpointAddress, hexData, 0)
+    print('send: ' + fromhex(hexData))
+
 async def start_hori_emulation(controller_state: ControllerState):
     """
     Starts hori racing wheel and forwards buttons to nintendo switch
@@ -146,14 +161,43 @@ async def start_hori_emulation(controller_state: ControllerState):
     # waits until controller is fully connected
     await controller_state.connect()
 
-    while not user_input.done():
-        print("forwarding code here")
-        await asyncio.sleep(0.1)
+    # Opens USB serial port for HORI
+    devices = usb.core.find(idVendor=0x0f0d, idProduct=0x0152)
+    wheel = devices[0]
+
+    # Gets USB interfaces and endpoints
+    interface = wheel.interfaces()[0]
+    writeEndpoint = interface.endpoints()[0]
+    readEndpoint = interface.endpoints()[1]
+
+    print('Configuring USB Hori Racing Wheel Overdrive for Xbox | S')
+    print('Please keep the racing wheel in mode #2 and on the default green profile')
+
+    # Configures USB Racing wheel, I have no idea what these codes mean
+    usbRead(devices, readEndpoint)
+    usbWrite(devices, writeEndpoint, '\x04\x20\x01\x00')
+    usbRead(devices, readEndpoint)
+    usbWrite(devices, writeEndpoint, '\x01\x20\x01\x09\x00\x04\x20\x3A\x00\x00\x00\xCA\x00')
+    usbRead(devices, readEndpoint)
+    usbRead(devices, readEndpoint)
+    usbWrite(devices, writeEndpoint, '\x01\x20\x01\x09\x00\x04\x20\x04\x01\x00\x00\x00\x00')
+    usbRead(devices, readEndpoint)
+    usbRead(devices, readEndpoint)
+    usbRead(devices, readEndpoint)
+    usbWrite(devices, writeEndpoint, '\x05\x20\x02\x0F\x06\x00\x00\x00\x00\x00\x00\x55\x53\x00\x00\x00\x00\x00\x00')
+    usbWrite(devices, writeEndpoint, '\x05\x20\x03\x01\x00')
+
+    print('Racing wheel configured successfully')
 
     # stops with button
     user_input = asyncio.ensure_future(
-        ainput(prompt='Forwarding inputs... Press <enter> to stop.')
+        ainput(prompt='Forwarding inputs to nintendo switch... Press <enter> to stop.')
     )
+
+    # listen for inputs while its not done
+    while not user_input.done():
+        print('forwarding code here')
+        await asyncio.sleep(0.1)
 
     # await future to trigger exceptions in case something went wrong
     await user_input
