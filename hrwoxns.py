@@ -148,7 +148,7 @@ async def usbReadControllerState(devices, endpoint):
     """
     Reads hexadecimal data from an USB endpoint
     """
-    return devices.read(endpoint.bEndpointAddress, endpoint.wMaxPacketSize, timeout=1000)
+    return devices.read(endpoint.bEndpointAddress, endpoint.wMaxPacketSize, timeout=120000)
 
 
 def usbWrite(devices, endpoint, hexData):
