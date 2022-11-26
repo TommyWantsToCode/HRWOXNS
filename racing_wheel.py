@@ -2,10 +2,12 @@
 
 import asyncio
 
+from array import array
+
 # Expected serial messages headers
 RACING_WHEEL_HEADER_CONTROL_STATE = array('B', [32, 0])
-RACING_WHEEL_HEADER_HOME_STATE = [7, 32]
-RACING_WHEEL_HEADER_HEARTBEAT = [3, 32]
+RACING_WHEEL_HEADER_HOME_STATE = array('B', [7, 32])
+RACING_WHEEL_HEADER_HEARTBEAT = array('B', [3, 32])
 
 from joycontrol.controller_state import ControllerState, button_push, button_press, button_release
 
