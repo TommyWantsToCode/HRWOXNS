@@ -109,6 +109,7 @@ class RacingWheel:
 
             print(int(hexData[6]))
             print(int(hexData[7]))
+            print(hexData[6] * 255 + hexData[7])
             print('---------')
             #print( str(( int(hexData[6]) << 8) | int(hexData[7]))))
 
