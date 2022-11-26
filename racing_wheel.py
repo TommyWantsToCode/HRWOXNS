@@ -118,6 +118,13 @@ class RacingWheel:
             # Start button
             await self.handleButton('btn_start', 'capture', hexData[18] & 0b1)
 
+
+            ent = (hexData[10] <<) | hexData[11]
+
+            print(hexData[10])
+            print(hexData[11])
+            print('-------')
+
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
             
             #Home button mapping
