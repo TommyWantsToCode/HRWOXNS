@@ -33,7 +33,6 @@ class RacingWheel:
         self.btn_right = False
 
         # HOME button
-        self.last_btn_status_home = 0
         self.btn_home = False
 
         # LSB is the same as break, RSB is the same as throttle
@@ -62,9 +61,21 @@ class RacingWheel:
         if hexHeader == RACING_WHEEL_HEADER_CONTROL_STATE:
             print("controller state")
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
-            print("home state")
-        elif hexHeader == RACING_WHEEL_HEADER_HEARTBEAT:
-            print("Heartbeat")
-        else:
+            
+            if hexData[4] & 0b1:
+
+                if not self.btn_home:
+                    self.btn_home = True
+                    print("Home presionado")
+
+            else:
+
+                if self.btn_home:
+                    self.btn_home = False
+                    print("Home soltado")
+            print(btn_status_home)
+
+
+
+        elif hexHeader != RACING_WHEEL_HEADER_HEARTBEAT:
             print("Unknown header from USB device: " + str(hexHeader) + " with data: " + str(hexData))
-            print(hexHeader)
