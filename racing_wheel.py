@@ -11,6 +11,8 @@ RACING_WHEEL_HEADER_HEARTBEAT = array('B', [3, 32])
 
 from joycontrol.controller_state import ControllerState, button_push, button_press, button_release
 
+# Translator between XBOX and Switch
+# Switch names: y, x, b, a, r, zr, minus, plus, r_stick, l_stick, home, capture, down, up, right, left, l, zl
 class RacingWheel:
 
     def __init__(self, controller_state: ControllerState):
@@ -48,6 +50,9 @@ class RacingWheel:
         self.btn_menu = False
         self.btn_start = False
 
+        # Useful bits to avoid unecesary computation
+        self.last_hexData_lr_dir = 0
+
     async def handleButton(self, btn_name, mappedNintendoButtons, newStatus):
 
         # Only act if the new status is different
@@ -64,7 +69,6 @@ class RacingWheel:
                 await button_press(self.controller_state, mappedNintendoButtons)
             else:
                 await button_release(self.controller_state, mappedNintendoButtons)
-            print(newStatus)
 
     async def handle(self, hexData):
 
@@ -73,9 +77,25 @@ class RacingWheel:
 
         # Detects message type
         if hexHeader == RACING_WHEEL_HEADER_CONTROL_STATE:
-            print("controller state")
+
+
+            hexData_lr_dir = hexData[5];
+            if hexData_lr_dir != self.last_hexData_lr_dir:
+                self.last_hexData_lr_dir = hexData_lr_dir
+
+                await self.handleButton('btn_up', 'up', hexData_lr_dir & 0b1)
+                await self.handleButton('btn_down', 'down', hexData_lr_dir & 0b10)
+                await self.handleButton('btn_left', 'left', hexData_lr_dir & 0b100)
+                await self.handleButton('btn_right', 'right', hexData_lr_dir & 0b1000)
+
+                await self.handleButton('btn_ldb', 'l_stick', hexData_lr_dir & 0b10000)
+                await self.handleButton('btn_rdb', 'r_stick', hexData_lr_dir & 0b100000)
+                await self.handleButton('btn_lb', 'l', hexData_lr_dir & 0b1000000)
+                await self.handleButton('btn_rb', 'r', hexData_lr_dir & 0b10000000)
+
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
             
+            #Home button mapping
             await self.handleButton('btn_home', 'home', hexData[4] & 0b1)
 
         elif hexHeader != RACING_WHEEL_HEADER_HEARTBEAT:
