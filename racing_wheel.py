@@ -105,6 +105,8 @@ class RacingWheel:
                 await self.handleButton('btn_rdb', 'r_stick', hexData_lr_dir & 0b100000)
                 await self.handleButton('btn_lb', 'l', hexData_lr_dir & 0b1000000)
                 await self.handleButton('btn_rb', 'r', hexData_lr_dir & 0b10000000)
+            
+            await self.handleButton('btn_start', 'capture', hexData[18] & 0b1)
 
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
             
