@@ -35,25 +35,19 @@ async def main():
     if not os.geteuid() == 0:
         raise PermissionError('Script must be run as root!')
 
-    # parse the spi flash
-    if args.spi_flash:
-        with open(args.spi_flash, 'rb') as spi_flash_file:
-            spi_flash = FlashMemory(spi_flash_file.read())
-    else:
-        # Create memory containing default controller stick calibration
-        spi_flash = FlashMemory()
+    # Create memory containing default controller stick calibration
+    spi_flash = FlashMemory()
 
     # Get controller name to emulate from arguments
-    controller = Controller.from_arg(args.controller)
-
+    controller = Controller.from_arg('PRO_CONTROLLER')
 
     # prepare the the emulated controller
     factory = controller_protocol_factory(controller, spi_flash=spi_flash)
     ctl_psm, itr_psm = 17, 19
     transport, protocol = await create_hid_server(factory, reconnect_bt_addr='58:B0:3E:07:25:14',
                                                         ctl_psm=ctl_psm,
-                                                        itr_psm=itr_psm,
-                                                        device_id=args.device_id)
+                                                        itr_psm=itr_psm
+                                                       )
 
     controller_state = protocol.get_controller_state()
 
