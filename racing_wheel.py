@@ -2,6 +2,8 @@
 
 import asyncio
 
+from joycontrol.controller_state import ControllerState, button_push, button_press, button_release
+
 class RacingWheel:
 
     def __init__(self, controller_state: ControllerState):
