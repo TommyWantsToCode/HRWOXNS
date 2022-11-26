@@ -167,6 +167,7 @@ async def start_hori_emulation(controller_state: ControllerState):
     print('Searching for USB Hori Racing Wheel Overdrive for Xbox | S...')
 
     # Opens USB serial port for HORI
+    devices = usb.core.find(idVendor=0x0f0d, idProduct=0x0152)
     wheel = devices[0]
 
     # Gets USB interfaces and endpoints
