@@ -54,7 +54,7 @@ class RacingWheel:
     async def handle(self, hexData):
 
         # Gets header from message
-        hexHeader = hexData[0:4]
+        hexHeader = hexData[0:2]
 
         # Detects message type
         if hexHeader == RACING_WHEEL_HEADER_CONTROL_STATE:
