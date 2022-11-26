@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import logging
+import usb.core
 import os
 
 from aioconsole import ainput
@@ -161,8 +162,11 @@ async def start_hori_emulation(controller_state: ControllerState):
     # waits until controller is fully connected
     await controller_state.connect()
 
+    ainput(prompt='Please connect your racing wheel and keep it in mode #2 on the green profile with default settings... Press <enter> to stop.')
+
+    print('Searching for USB Hori Racing Wheel Overdrive for Xbox | S...')
+
     # Opens USB serial port for HORI
-    devices = usb.core.find(idVendor=0x0f0d, idProduct=0x0152)
     wheel = devices[0]
 
     # Gets USB interfaces and endpoints
@@ -170,8 +174,17 @@ async def start_hori_emulation(controller_state: ControllerState):
     writeEndpoint = interface.endpoints()[0]
     readEndpoint = interface.endpoints()[1]
 
-    print('Configuring USB Hori Racing Wheel Overdrive for Xbox | S')
-    print('Please keep the racing wheel in mode #2 and on the default green profile')
+    # Resets device
+    devices.reset()
+
+    # Stop any kernel drive
+    if devices.is_kernel_driver_active(interface.bInterfaceNumber):
+        devices.detach_kernel_driver(interface.bInterfaceNumber)
+
+    # Sets USB device configuration
+    devices.set_configuration()
+
+    print('Configuring USB Hori Racing Wheel Overdrive for Xbox | S...')
 
     # Configures USB Racing wheel, I have no idea what these codes mean
     usbRead(devices, readEndpoint)
@@ -197,6 +210,7 @@ async def start_hori_emulation(controller_state: ControllerState):
     # listen for inputs while its not done
     while not user_input.done():
         print('forwarding code here')
+        usbRead(devices, readEndpoint)
         await asyncio.sleep(0.1)
 
     # await future to trigger exceptions in case something went wrong

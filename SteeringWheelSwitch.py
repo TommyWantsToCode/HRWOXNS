@@ -1,7 +1,11 @@
 import usb.core
 
 #58:B0:3E:07:25:14
-
+devices = usb.core.find(idVendor=0x0f0d, idProduct=0x0152)
+wheel = devices[0]
+interface = wheel.interfaces()[0]
+writeEndpoint = interface.endpoints()[0]
+readEndpoint = interface.endpoints()[1]
 
 devices.reset()
 
