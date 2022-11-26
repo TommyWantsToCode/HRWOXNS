@@ -46,6 +46,6 @@ class RacingWheel:
         self.btn_menu = False
         self.btn_start = False
 
-    async def handle(hexData):
+    async def handle(self, hexData):
 
         print(hexData[0:4])
