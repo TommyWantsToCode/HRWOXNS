@@ -73,7 +73,6 @@ class RacingWheel:
                 if self.btn_home:
                     self.btn_home = False
                     print("Home soltado")
-            print(btn_status_home)
 
 
 
