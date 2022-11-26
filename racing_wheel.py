@@ -3,9 +3,9 @@
 import asyncio
 
 # Expected serial messages headers
-RACING_WHEEL_HEADER_CONTROL_STATE = '\x20\x00';
-RACING_WHEEL_HEADER_HOME_STATE = '\x07\x20';
-RACING_WHEEL_HEADER_HEARTBEAT = '\x03\x20';
+RACING_WHEEL_HEADER_CONTROL_STATE = [33, 0]
+RACING_WHEEL_HEADER_HOME_STATE = [7, 33]
+RACING_WHEEL_HEADER_HEARTBEAT = [3, 33]
 
 from joycontrol.controller_state import ControllerState, button_push, button_press, button_release
 
@@ -63,3 +63,5 @@ class RacingWheel:
             print("home state")
         elif hexHeader == RACING_WHEEL_HEADER_HEARTBEAT:
             print("Heartbeat")
+        else:
+            print("Unknown data from USB device: " + str(hexData))
