@@ -79,6 +79,7 @@ class RacingWheel:
         # Detects message type
         if hexHeader == RACING_WHEEL_HEADER_CONTROL_STATE:
 
+            # ABXY and action buttons except start
             hexData_abxy_actions = hexData[4];
             if hexData_abxy_actions != self.last_hexData_abxy_actions:
                 self.last_hexData_abxy_actions = hexData_abxy_actions
@@ -91,7 +92,7 @@ class RacingWheel:
                 await self.handleButton('btn_x', 'y', hexData_abxy_actions & 0b1000000)
                 await self.handleButton('btn_y', 'x', hexData_abxy_actions & 0b10000000)
 
-
+            # Cross arrows and l/r buttons
             hexData_lr_dir = hexData[5];
             if hexData_lr_dir != self.last_hexData_lr_dir:
                 self.last_hexData_lr_dir = hexData_lr_dir
@@ -105,7 +106,11 @@ class RacingWheel:
                 await self.handleButton('btn_rdb', 'r_stick', hexData_lr_dir & 0b100000)
                 await self.handleButton('btn_lb', 'l', hexData_lr_dir & 0b1000000)
                 await self.handleButton('btn_rb', 'r', hexData_lr_dir & 0b10000000)
-            
+
+            print((hexData[4] << 16) & hexData[5])
+
+
+            # Start button
             await self.handleButton('btn_start', 'capture', hexData[18] & 0b1)
 
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
