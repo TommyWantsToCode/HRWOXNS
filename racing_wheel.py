@@ -66,7 +66,7 @@ class RacingWheel:
             # Presses or releases button on nintendo
             if newStatus:
                 await button_press(controller_state, mappedNintendoButtons)
-            else
+            else:
                 await button_release(controller_state, mappedNintendoButtons)
             print(newStatus)
 
