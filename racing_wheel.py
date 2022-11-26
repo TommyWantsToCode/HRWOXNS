@@ -52,6 +52,7 @@ class RacingWheel:
 
         # Useful bits to avoid unecesary computation
         self.last_hexData_lr_dir = 0
+        self.last_hexData_abxy_actions = 0
 
     async def handleButton(self, btn_name, mappedNintendoButtons, newStatus):
 
@@ -77,6 +78,18 @@ class RacingWheel:
 
         # Detects message type
         if hexHeader == RACING_WHEEL_HEADER_CONTROL_STATE:
+
+            hexData_abxy_actions = hexData[4];
+            if hexData_abxy_actions != self.last_hexData_abxy_actions:
+                self.last_hexData_abxy_actions = hexData_abxy_actions
+
+                await self.handleButton('btn_menu', 'plus', last_hexData_abxy_actions & 0b100)
+                await self.handleButton('btn_change_view', 'minus', last_hexData_abxy_actions & 0b1000)
+
+                await self.handleButton('btn_a', 'b', hexData_lr_dir & 0b10000)
+                await self.handleButton('btn_b', 'a', hexData_lr_dir & 0b100000)
+                await self.handleButton('btn_x', 'y', hexData_lr_dir & 0b1000000)
+                await self.handleButton('btn_y', 'x', hexData_lr_dir & 0b10000000)
 
 
             hexData_lr_dir = hexData[5];
