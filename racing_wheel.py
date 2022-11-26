@@ -57,7 +57,7 @@ class RacingWheel:
             setattr(self, btn_name, newStatus)
 
             # Ensures controller conection via bluetooth
-            await controller_state.connect()
+            await self.controller_state.connect()
 
             # Presses or releases button on nintendo
             if newStatus:
