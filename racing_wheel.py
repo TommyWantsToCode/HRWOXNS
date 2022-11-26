@@ -123,6 +123,7 @@ class RacingWheel:
 
             print(hexData[10])
             print(hexData[11])
+            print(ent)
             print('-------')
 
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
