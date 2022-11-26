@@ -218,8 +218,8 @@ async def start_hori_emulation(controller_state: ControllerState):
     # listen for inputs while its not done
     while not user_input.done():
         print('forwarding code here')
-        usbRead(devices, readEndpoint)
-        await asyncio.sleep(0.1)
+        await usbReadControllerState(devices, readEndpoint)
+        # await asyncio.sleep(0.1)
 
     # await future to trigger exceptions in case something went wrong
     await user_input
