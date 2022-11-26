@@ -107,7 +107,7 @@ class RacingWheel:
                 await self.handleButton('btn_lb', 'l', hexData_lr_dir & 0b1000000)
                 await self.handleButton('btn_rb', 'r', hexData_lr_dir & 0b10000000)
 
-            print(str(long(hexData[6])) + " + " + str(long(hexData[7]) + " = " ( long(hexData[6]) << 8) | long(hexData[7]))))
+            print(    str(long(hexData[6])) + " + " + str(long(hexData[7]) + " = " + str(( long(hexData[6]) << 8) | long(hexData[7]))))
 
 
             # Start button
