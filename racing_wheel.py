@@ -19,14 +19,12 @@ class RacingWheel:
         self.controller_state = controller_state
 
         # ABXY buttons
-        self.last_btn_status_abxy = 0
         self.btn_a = False
         self.btn_b = False
         self.btn_x = False
         self.btn_y = False
 
         # CROSS buttons
-        self.last_btn_status_cross = 0
         self.btn_up = False
         self.btn_down = False
         self.btn_left = False
@@ -40,14 +38,12 @@ class RacingWheel:
         self.pedal_throttle = float(0)
 
         # L and R buttons
-        self.last_btn_status_lr = 0
         self.btn_ldb = False
         self.btn_lb = False
         self.btn_rb = False
         self.btn_rdb = False
 
         # Action buttons
-        self.last_btn_status_action = 0
         self.btn_change_view = False
         self.btn_menu = False
         self.btn_start = False
@@ -65,9 +61,9 @@ class RacingWheel:
 
             # Presses or releases button on nintendo
             if newStatus:
-                await button_press(controller_state, mappedNintendoButtons)
+                await button_press(self.controller_state, mappedNintendoButtons)
             else:
-                await button_release(controller_state, mappedNintendoButtons)
+                await button_release(self.controller_state, mappedNintendoButtons)
             print(newStatus)
 
     async def handle(self, hexData):
