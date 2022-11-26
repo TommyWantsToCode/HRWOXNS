@@ -59,5 +59,4 @@ async def main():
     print('Available buttons: ' + str(controller_state.button_state.get_available_buttons()))
 
 loop = asyncio.get_event_loop()
-forecast = loop.run_until_complete(main())
-loop.close()
+loop.run_until_complete(main())
