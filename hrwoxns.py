@@ -16,6 +16,8 @@ from joycontrol.memory import FlashMemory
 from joycontrol.protocol import controller_protocol_factory
 from joycontrol.server import create_hid_server
 
+from racing_wheel import RacingWheel
+
 logger = logging.getLogger(__name__)
 
 """Emulates Switch controller. Opens joycontrol.command_line_interface to send button commands and more.
@@ -215,13 +217,18 @@ async def start_hori_emulation(controller_state: ControllerState):
         ainput(prompt='Forwarding inputs to nintendo switch... Press <enter> to stop.')
     )
 
+    # creates handler for racing wheel
+    rwHandler = RacingWheel(controller_state)
+
     # listen for inputs while its not done
     while not user_input.done():
 
         # Reads controller hexadecimal state
         controllerHex = await usbReadControllerState(devices, readEndpoint)
 
-        print('controller: ' + ''.join([ '%02X' %x for x in controllerHex]))
+        # Handles controller hex state
+        if controllerHex:
+            await rwHandler.handle(controllerHex)
 
         # It wont listen for the done input if this is not here
         if user_input.done():
