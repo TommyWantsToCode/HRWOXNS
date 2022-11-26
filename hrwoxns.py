@@ -141,8 +141,15 @@ def usbRead(devices, endpoint):
     Reads hexadecimal data from an USB endpoint
     """
     answer = devices.read(endpoint.bEndpointAddress, endpoint.wMaxPacketSize)
-    print('read: ' + ''.join([ '%02X' %x for x in answer]) + '\n')
+    print('read: ' + ''.join([ '%02X' %x for x in answer]))
     return answer
+
+async def usbReadControllerState(devices, endpoint):
+    """
+    Reads hexadecimal data from an USB endpoint
+    """
+    return devices.read(endpoint.bEndpointAddress, endpoint.wMaxPacketSize, timeout=1000)
+
 
 def usbWrite(devices, endpoint, hexData):
     """
