@@ -28,36 +28,42 @@ async def release(*args):
     await controller_state.connect()
     await button_release(controller_state, *args)
 
+# Configure control, set up bluetooth, start listening and forwarding input
+async def main():
 
-# check if root
-if not os.geteuid() == 0:
-    raise PermissionError('Script must be run as root!')
+    # check if root
+    if not os.geteuid() == 0:
+        raise PermissionError('Script must be run as root!')
 
-# parse the spi flash
-if args.spi_flash:
-    with open(args.spi_flash, 'rb') as spi_flash_file:
-        spi_flash = FlashMemory(spi_flash_file.read())
-else:
-    # Create memory containing default controller stick calibration
-    spi_flash = FlashMemory()
+    # parse the spi flash
+    if args.spi_flash:
+        with open(args.spi_flash, 'rb') as spi_flash_file:
+            spi_flash = FlashMemory(spi_flash_file.read())
+    else:
+        # Create memory containing default controller stick calibration
+        spi_flash = FlashMemory()
 
-# Get controller name to emulate from arguments
-controller = Controller.from_arg(args.controller)
+    # Get controller name to emulate from arguments
+    controller = Controller.from_arg(args.controller)
 
 
-# prepare the the emulated controller
-factory = controller_protocol_factory(controller, spi_flash=spi_flash)
-ctl_psm, itr_psm = 17, 19
-transport, protocol = await create_hid_server(factory, reconnect_bt_addr='58:B0:3E:07:25:14',
-                                                      ctl_psm=ctl_psm,
-                                                      itr_psm=itr_psm,
-                                                      device_id=args.device_id)
+    # prepare the the emulated controller
+    factory = controller_protocol_factory(controller, spi_flash=spi_flash)
+    ctl_psm, itr_psm = 17, 19
+    transport, protocol = await create_hid_server(factory, reconnect_bt_addr='58:B0:3E:07:25:14',
+                                                        ctl_psm=ctl_psm,
+                                                        itr_psm=itr_psm,
+                                                        device_id=args.device_id)
 
-controller_state = protocol.get_controller_state()
+    controller_state = protocol.get_controller_state()
 
-# validates controller state
-if controller_state.get_controller() != Controller.PRO_CONTROLLER:
-    raise ValueError('This script only works with the Pro Controller!')
+    # validates controller state
+    if controller_state.get_controller() != Controller.PRO_CONTROLLER:
+        raise ValueError('This script only works with the Pro Controller!')
 
-# prints buttons for ease
-print('Available buttons: ' + str(controller_state.button_state.get_available_buttons()))
+    # prints buttons for ease
+    print('Available buttons: ' + str(controller_state.button_state.get_available_buttons()))
+
+loop = asyncio.get_event_loop()
+forecast = loop.run_until_complete(main())
+loop.close()
