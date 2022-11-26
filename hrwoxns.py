@@ -149,7 +149,7 @@ def usbWrite(devices, endpoint, hexData):
     Writes hexadecimal data to an USB endpoint
     """
     devices.write(endpoint.bEndpointAddress, hexData, 0)
-    print('send: ' + fromhex(hexData))
+    print('send: ' + print " ".join(hex(ord(x)) for x in hexData))
 
 async def start_hori_emulation(controller_state: ControllerState):
     """
