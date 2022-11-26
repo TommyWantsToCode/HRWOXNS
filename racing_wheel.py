@@ -2,6 +2,11 @@
 
 import asyncio
 
+# Expected serial messages headers
+RACING_WHEEL_HEADER_CONTROL_STATE = '\x20\x00';
+RACING_WHEEL_HEADER_HOME_STATE = '\x07\x20';
+RACING_WHEEL_HEADER_HEARTBEAT = '\x03\x20';
+
 from joycontrol.controller_state import ControllerState, button_push, button_press, button_release
 
 class RacingWheel:
@@ -48,4 +53,13 @@ class RacingWheel:
 
     async def handle(self, hexData):
 
-        print(hexData[0:4])
+        # Gets header from message
+        hexHeader = hexData[0:4]
+
+        # Detects message type
+        if hexHeader == RACING_WHEEL_HEADER_CONTROL_STATE:
+            print("controller state")
+        elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
+            print("home state")
+        elif hexHeader == RACING_WHEEL_HEADER_HEARTBEAT:
+            print("Heartbeat")
