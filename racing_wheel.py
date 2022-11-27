@@ -40,7 +40,8 @@ class RacingWheel:
         self.stick_maxDown = calibration.v_center - calibration.v_max_below_center
         self.stick_maxRight = calibration.h_center + calibration.h_max_above_center
         self.stick_maxLeft = calibration.h_center - calibration.h_max_below_center
-        self.stick_center_x =  (self.stick_maxRight + self.stick_maxLeft) / 2
+        self.stick_center_x =  int(lerp(self.stick_maxRight, self.stick_maxLeft, 0.5))
+        self.stick_center_y = int(lerp(self.stick_maxUp, self.stick_maxDown, 0.5))
 
         # ABXY buttons
         self.btn_a = False
@@ -142,31 +143,28 @@ class RacingWheel:
             steering_raw_value = int(((steeringByteB & 0b01111111) << 8) | steerintByteA) / 32767
 
             # Percentage from min to max of X axis
-            steering_x_percentage = 0.5
+            steering_x_value = self.stick_center_x
 
             if steeringByteB & 0b10000000:
 
                 print("left")
 
-                steering_x_percentage = int(lerp(self.stick_maxLeft, self.stick_center_x, steering_raw_value))
+                steering_x_value = int(lerp(self.stick_maxLeft, self.stick_center_x, steering_raw_value))
 
             elif steeringByteB | steerintByteA:
 
                 print("right")
 
-                steering_x_percentage = int(lerp(self.stick_center_x, self.stick_maxRight, steering_raw_value))
+                steering_x_value = int(lerp(self.stick_center_x, self.stick_maxRight, steering_raw_value))
 
             else:
 
                 print("center")
 
-            print(steering_x_percentage)
+            print(steering_x_value)
 
-            horizontalValue = int(lerp(self.stick_maxRight, self.stick_maxLeft, steering_x_percentage))
-            verticalValue = int(lerp(self.stick_maxUp, self.stick_maxDown, 0.5))
-
-            self.stick.set_h(horizontalValue)
-            self.stick.set_v(verticalValue)
+            self.stick.set_h(steering_x_value)
+            self.stick.set_v(self.stick_center_y)
             await asyncio.sleep(0)
 
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
