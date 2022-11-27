@@ -158,27 +158,14 @@ class RacingWheel:
 
                 print("center")
 
+            print(horizontalPercentage)
+
             horizontalValue = int(lerp(self.stick_maxRight, self.stick_maxLeft, horizontalPercentage))
             verticalValue = int(lerp(self.stick_maxUp, self.stick_maxDown, 0.5))
 
             self.stick.set_h(horizontalValue)
             self.stick.set_v(verticalValue)
             await asyncio.sleep(0)
-
-            byte1 = hexData[10]
-            byte2 = hexData[11]
-
-            print(format(byte2, "040b")[-8:] + format(byte1, "040b")[-8:]  )
-
-            bytesum = 
-
-            print(bytesum)
-
-            #print('read: ' + ''.join([ '%02X' %x for x in hexData[11:12]]) + ''.join([ '%02X' %x for x in hexData[10:11]]))
-
-
-            #print(ent)
-            #print('-------')
 
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
             
