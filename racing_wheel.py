@@ -159,7 +159,7 @@ class RacingWheel:
                 print("center")
 
             horizontalValue = int(lerp(self.stick_maxRight, self.stick_maxLeft, horizontalPercentage))
-            verticalValue = int(lerp(self.stick_maxUp, self.stick_maxDown, verticalPercentage))
+            verticalValue = int(lerp(self.stick_maxUp, self.stick_maxDown, 0.5))
 
             self.stick.set_h(horizontalValue)
             self.stick.set_v(verticalValue)
