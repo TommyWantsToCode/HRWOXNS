@@ -5,6 +5,30 @@ import math
 
 from array import array
 
+# Edit this array to map the steering wheel keys to nintendo switch inputs 'wheel input': 'switch input'
+# This can only change non-analog inputs (Note: Triggets on nintendo switch are not analog)
+# Switch names: y, x, b, a, r, zr, minus, plus, r_stick, l_stick, home, capture, down, up, right, left, l, zl
+RACING_WHEEL_CONTROLLER_MAPS = {
+                                    'btn_menu':             'plus',
+                                    'btn_change_view':      'minus',
+                                    'btn_a':                'b',
+                                    'btn_b':                'a',
+                                    'btn_x':                'y',
+                                    'btn_y':                'x',
+                                    'btn_up':               'up',
+                                    'btn_down':             'down',
+                                    'btn_left':             'left',
+                                    'btn_right':            'right',
+                                    'btn_ldb':              'l_stick',
+                                    'btn_rdb':              'r_stick',
+                                    'btn_lb':               'l',
+                                    'btn_rb':               'r',
+                                    'pedal_brake':          'zl',
+                                    'pedal_throttle':       'zr',
+                                    'btn_start':            'capture',
+                                    'btn_home':             'home'
+                                } 
+
 # Expected serial messages headers
 RACING_WHEEL_HEADER_CONTROL_STATE = array('B', [32, 0])
 RACING_WHEEL_HEADER_HOME_STATE = array('B', [7, 32])
@@ -21,7 +45,6 @@ def lerp(a, b, percentage):
     return (percentage * a) + ((1 - percentage) * b)
 
 # Translator between XBOX and Switch
-# Switch names: y, x, b, a, r, zr, minus, plus, r_stick, l_stick, home, capture, down, up, right, left, l, zl
 class RacingWheel:
 
     def __init__(self, controller_state: ControllerState):
@@ -77,7 +100,16 @@ class RacingWheel:
         self.last_hexData_lr_dir = 0
         self.last_hexData_abxy_actions = 0
 
-    async def handleButton(self, btn_name, mappedNintendoButtons, newStatus):
+    async def handleSteering(self, x, y):
+
+        # Ensures controller conection via bluetooth
+        await self.controller_state.connect()
+
+        self.stick.set_h(x)
+        self.stick.set_v(y)
+        await asyncio.sleep(0) # HACK: It doesnt work with out this for some reason
+
+    async def handleButton(self, btn_name, newStatus):
 
         # Only act if the new status is different
         if getattr(self, btn_name) != newStatus:
@@ -90,9 +122,9 @@ class RacingWheel:
 
             # Presses or releases button on nintendo
             if newStatus:
-                await button_press(self.controller_state, mappedNintendoButtons)
+                await button_press(self.controller_state, RACING_WHEEL_CONTROLLER_MAPS[btn_name])
             else:
-                await button_release(self.controller_state, mappedNintendoButtons)
+                await button_release(self.controller_state, RACING_WHEEL_CONTROLLER_MAPS[btn_name])
 
     async def handle(self, hexData):
 
@@ -102,75 +134,62 @@ class RacingWheel:
         # Detects message type
         if hexHeader == RACING_WHEEL_HEADER_CONTROL_STATE:
 
+            # Reads raw steering value
+            steerintByteA = hexData[10]
+            steeringByteB = hexData[11]
+            steering_raw_value = int(((steeringByteB & 0b01111111) << 8) | steerintByteA) / 0b1111111
+
+            # Percentage from min to max of X axis
+            steering_x_value = self.stick_center_x
+
+            if steeringByteB & 0b10000000:
+                steering_x_value = int(lerp(self.stick_center_x, self.stick_maxLeft, steering_raw_value))
+
+            elif steeringByteB | steerintByteA:
+                steering_x_value = int(lerp(self.stick_maxRight, self.stick_center_x, steering_raw_value))
+
+            # Steers the wheel
+            await self.handleSteering(steering_x_value, self.stick_center_y)
+
             # ABXY and action buttons except start
             hexData_abxy_actions = hexData[4];
             if hexData_abxy_actions != self.last_hexData_abxy_actions:
                 self.last_hexData_abxy_actions = hexData_abxy_actions
 
-                await self.handleButton('btn_menu', 'plus', hexData_abxy_actions & 0b100)
-                await self.handleButton('btn_change_view', 'minus', hexData_abxy_actions & 0b1000)
+                await self.handleButton('btn_menu', hexData_abxy_actions & 0b100)
+                await self.handleButton('btn_change_view', hexData_abxy_actions & 0b1000)
 
-                await self.handleButton('btn_a', 'b', hexData_abxy_actions & 0b10000)
-                await self.handleButton('btn_b', 'a', hexData_abxy_actions & 0b100000)
-                await self.handleButton('btn_x', 'y', hexData_abxy_actions & 0b1000000)
-                await self.handleButton('btn_y', 'x', hexData_abxy_actions & 0b10000000)
+                await self.handleButton('btn_a', hexData_abxy_actions & 0b10000)
+                await self.handleButton('btn_b', hexData_abxy_actions & 0b100000)
+                await self.handleButton('btn_x', hexData_abxy_actions & 0b1000000)
+                await self.handleButton('btn_y', hexData_abxy_actions & 0b10000000)
 
             # Cross arrows and l/r buttons
             hexData_lr_dir = hexData[5];
             if hexData_lr_dir != self.last_hexData_lr_dir:
                 self.last_hexData_lr_dir = hexData_lr_dir
 
-                await self.handleButton('btn_up', 'up', hexData_lr_dir & 0b1)
-                await self.handleButton('btn_down', 'down', hexData_lr_dir & 0b10)
-                await self.handleButton('btn_left', 'left', hexData_lr_dir & 0b100)
-                await self.handleButton('btn_right', 'right', hexData_lr_dir & 0b1000)
+                await self.handleButton('btn_up', hexData_lr_dir & 0b1)
+                await self.handleButton('btn_down', hexData_lr_dir & 0b10)
+                await self.handleButton('btn_left', hexData_lr_dir & 0b100)
+                await self.handleButton('btn_right', hexData_lr_dir & 0b1000)
 
-                await self.handleButton('btn_ldb', 'l_stick', hexData_lr_dir & 0b10000)
-                await self.handleButton('btn_rdb', 'r_stick', hexData_lr_dir & 0b100000)
-                await self.handleButton('btn_lb', 'l', hexData_lr_dir & 0b1000000)
-                await self.handleButton('btn_rb', 'r', hexData_lr_dir & 0b10000000)
+                await self.handleButton('btn_ldb', hexData_lr_dir & 0b10000)
+                await self.handleButton('btn_rdb', hexData_lr_dir & 0b100000)
+                await self.handleButton('btn_lb', hexData_lr_dir & 0b1000000)
+                await self.handleButton('btn_rb', hexData_lr_dir & 0b10000000)
 
             # Pedals with analog to digital conversion
-            await self.handleButton('pedal_brake', 'zl', hexData[7] * 256 + hexData[6] > RACING_WHEEL_BRAKE_THRESHOLD)
-            await self.handleButton('pedal_throttle', 'zr', hexData[9] * 256 + hexData[8] > RACING_WHEEL_BRAKE_THRESHOLD)
+            await self.handleButton('pedal_brake', hexData[7] * 256 + hexData[6] > RACING_WHEEL_BRAKE_THRESHOLD)
+            await self.handleButton('pedal_throttle', hexData[9] * 256 + hexData[8] > RACING_WHEEL_BRAKE_THRESHOLD)
 
             # Start button
-            await self.handleButton('btn_start', 'capture', hexData[18] & 0b1)
-
-            # Reads raw steering value
-            steerintByteA = hexData[10]
-            steeringByteB = hexData[11]
-            steering_raw_value = int(((steeringByteB & 0b01111111) << 8) | steerintByteA) / 32767
-
-            # Percentage from min to max of X axis
-            steering_x_value = self.stick_center_x
-
-            if steeringByteB & 0b10000000:
-
-                print("left")
-
-                steering_x_value = int(lerp(self.stick_center_x, self.stick_maxLeft, steering_raw_value))
-
-            elif steeringByteB | steerintByteA:
-
-                print("right")
-
-                steering_x_value = int(lerp(self.stick_maxRight, self.stick_center_x, steering_raw_value))
-
-            else:
-
-                print("center")
-
-            print(steering_x_value)
-
-            self.stick.set_h(steering_x_value)
-            self.stick.set_v(self.stick_center_y)
-            await asyncio.sleep(0)
+            await self.handleButton('btn_start', hexData[18] & 0b1)
 
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
             
             #Home button mapping
-            await self.handleButton('btn_home', 'home', hexData[4] & 0b1)
+            await self.handleButton('btn_home', hexData[4] & 0b1)
 
         elif hexHeader != RACING_WHEEL_HEADER_HEARTBEAT:
             print("Unknown header from USB device: " + str(hexHeader) + " with data: " + str(hexData))
