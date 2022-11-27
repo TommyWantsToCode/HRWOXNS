@@ -137,18 +137,20 @@ class RacingWheel:
             await self.handleButton('btn_start', 'capture', hexData[18] & 0b1)
 
             # Reads raw steering value
-            steering_raw_value = int(((byte2 & 0b01111111) << 8) | byte1) / 32767
+            steerintByteA = hexData[10]
+            steeringByteB = hexData[11]
+            steering_raw_value = int(((steeringByteB & 0b01111111) << 8) | steerintByteA) / 32767
 
             # Percentage from min to max of X axis
             steering_x_percentage = 0.5
 
-            if hexData[11] & 0b10000000:
+            if steeringByteB & 0b10000000:
 
                 print("left")
 
                 steering_x_percentage = int(lerp(self.stick_maxLeft, self.stick_center_x, steering_raw_value))
 
-            elif hexData[11] | hexData[10]:
+            elif steeringByteB | steerintByteA:
 
                 print("right")
 
