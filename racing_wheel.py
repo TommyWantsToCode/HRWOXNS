@@ -62,8 +62,8 @@ RACING_WHEEL_HEADER_HOME_STATE = array('B', [7, 32])
 RACING_WHEEL_HEADER_HEARTBEAT = array('B', [3, 32])
 
 # Threshold for trigger, switch triggers are not analog (0 - 1024)
-RACING_WHEEL_BRAKE_THRESHOLD = 512
-RACING_WHEEL_THROTTLE_THRESHOLD = 512
+RACING_WHEEL_BRAKE_THRESHOLD = 256
+RACING_WHEEL_THROTTLE_THRESHOLD = 256
 
 from joycontrol.controller_state import ControllerState, button_push, button_press, button_release
 
