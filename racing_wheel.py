@@ -121,14 +121,16 @@ class RacingWheel:
 
             ent = (hexData[10] * 256) + hexData[11]
 
-            print(hexData[10])
-            print(hexData[11])
+            byte1 = hexData[10]
+            byte2 = hexData[11]
 
-            print('read: ' + ''.join([ '%02X' %x for x in hexData[11:12]]) + ''.join([ '%02X' %x for x in hexData[10:11]]))
+            print(bin(int(byte1)))
+
+            #print('read: ' + ''.join([ '%02X' %x for x in hexData[11:12]]) + ''.join([ '%02X' %x for x in hexData[10:11]]))
 
 
-            print(ent)
-            print('-------')
+            #print(ent)
+            #print('-------')
 
         elif hexHeader == RACING_WHEEL_HEADER_HOME_STATE:
             
