@@ -119,7 +119,17 @@ class RacingWheel:
             await self.handleButton('btn_start', 'capture', hexData[18] & 0b1)
 
 
-            ent = (hexData[10] * 256) + hexData[11]
+            if hexData[11] & 0b10000000:
+
+                print("left")
+
+            elif hexData[11] | hexData[10]:
+
+                print("right")
+
+            else:
+
+                print("center")
 
             byte1 = hexData[10]
             byte2 = hexData[11]
