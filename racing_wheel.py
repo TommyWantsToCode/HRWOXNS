@@ -166,9 +166,9 @@ class RacingWheel:
 
             print(format(byte2, "040b")[-8:] + format(byte1, "040b")[-8:]  )
 
-            bytesum = ((byte2 & 0b01111111) << 8) | byte1
+            bytesum = int(((byte2 & 0b01111111) << 8) | byte1) / 32767
 
-            print(int(bytesum))
+            print(bytesum)
 
             #print('read: ' + ''.join([ '%02X' %x for x in hexData[11:12]]) + ''.join([ '%02X' %x for x in hexData[10:11]]))
 
