@@ -123,6 +123,10 @@ class RacingWheel:
 
             print(hexData[10])
             print(hexData[11])
+
+            print('read: ' + ''.join([ '%02X' %x for x in hexData[10:11]]) + '\n')
+
+
             print(ent)
             print('-------')
 
