@@ -16,6 +16,10 @@ RACING_WHEEL_THROTTLE_THRESHOLD = 512
 
 from joycontrol.controller_state import ControllerState, button_push, button_press, button_release
 
+# Simple interpolation
+def lerp(a, b, percentage):
+    return (percentage * a) + ((1 - percentage) * b)
+
 # Translator between XBOX and Switch
 # Switch names: y, x, b, a, r, zr, minus, plus, r_stick, l_stick, home, capture, down, up, right, left, l, zl
 class RacingWheel:
