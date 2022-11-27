@@ -149,13 +149,13 @@ class RacingWheel:
 
                 print("left")
 
-                steering_x_value = int(lerp(self.stick_maxLeft, self.stick_center_x, steering_raw_value))
+                steering_x_value = int(lerp(self.stick_center_x, self.stick_maxLeft, steering_raw_value))
 
             elif steeringByteB | steerintByteA:
 
                 print("right")
 
-                steering_x_value = int(lerp(self.stick_center_x, self.stick_maxRight, steering_raw_value))
+                steering_x_value = int(lerp(self.stick_maxRight, self.stick_center_x, steering_raw_value))
 
             else:
 
