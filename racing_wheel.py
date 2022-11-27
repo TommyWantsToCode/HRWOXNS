@@ -24,6 +24,18 @@ class RacingWheel:
         # Saves controller state reference
         self.controller_state = controller_state
 
+        # Centers stick and saves its reference
+        self.controller_state.l_stick_state.set_center()
+        self.controller_state.r_stick_state.set_center()
+        self.stick = controller_state.l_stick_state
+
+        # Calculates stick range
+        calibration = stick.get_calibration()
+        self.stick_maxUp = calibration.v_center + calibration.v_max_above_center
+        self.stick_maxDown = calibration.v_center - calibration.v_max_below_center
+        self.stick_maxRight = calibration.h_center + calibration.h_max_above_center
+        self.stick_maxLeft = calibration.h_center - calibration.h_max_below_center
+
         # ABXY buttons
         self.btn_a = False
         self.btn_b = False
@@ -118,18 +130,30 @@ class RacingWheel:
             # Start button
             await self.handleButton('btn_start', 'capture', hexData[18] & 0b1)
 
+            horizontalPercentage = 0.5
+            verticalPercentage = 0.5
 
             if hexData[11] & 0b10000000:
 
                 print("left")
 
+                horizontalPercentage = 0
+
             elif hexData[11] | hexData[10]:
 
                 print("right")
 
+                horizontalPercentage = 1
+
             else:
 
                 print("center")
+
+            horizontalValue = int(lerp(maxRight, maxLeft, horizontalPercentage))
+            verticalValue = int(lerp(maxUp, maxDown, verticalPercentage))
+
+            self.stick.set_h(horizontalValue)
+            self.stick.set_v(verticalValue)
 
             byte1 = hexData[10]
             byte2 = hexData[11]
