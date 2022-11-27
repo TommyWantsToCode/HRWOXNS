@@ -190,6 +190,3 @@ class RacingWheel:
             
             #Home button mapping
             await self.handleButton('btn_home', hexData[4] & 0b1)
-
-        elif hexHeader != RACING_WHEEL_HEADER_HEARTBEAT:
-            print("Unknown header from USB device: " + str(hexHeader) + " with data: " + str(hexData))
