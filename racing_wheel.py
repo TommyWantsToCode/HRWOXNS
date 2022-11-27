@@ -40,6 +40,7 @@ class RacingWheel:
         self.stick_maxDown = calibration.v_center - calibration.v_max_below_center
         self.stick_maxRight = calibration.h_center + calibration.h_max_above_center
         self.stick_maxLeft = calibration.h_center - calibration.h_max_below_center
+        self.stick_center_x =  (self.stick_maxRight + self.stick_maxLeft) / 2
 
         # ABXY buttons
         self.btn_a = False
@@ -135,20 +136,23 @@ class RacingWheel:
             # Start button
             await self.handleButton('btn_start', 'capture', hexData[18] & 0b1)
 
-            horizontalPercentage = 0.5
-            verticalPercentage = 0.5
+            # Reads raw steering value
+            steering_raw_value = int(((byte2 & 0b01111111) << 8) | byte1) / 32767
+
+            # Percentage from min to max of X axis
+            steering_x_percentage = 0.5
 
             if hexData[11] & 0b10000000:
 
                 print("left")
 
-                horizontalPercentage = 0.25
+                steering_x_percentage = int(lerp(self.stick_maxLeft, self.stick_center_x, horizontalPercentage))
 
             elif hexData[11] | hexData[10]:
 
                 print("right")
 
-                horizontalPercentage = 0.75
+                steering_x_percentage = int(self.stick_center_x, self.stick_maxRight, horizontalPercentage))
 
             else:
 
@@ -166,7 +170,7 @@ class RacingWheel:
 
             print(format(byte2, "040b")[-8:] + format(byte1, "040b")[-8:]  )
 
-            bytesum = int(((byte2 & 0b01111111) << 8) | byte1) / 32767
+            bytesum = 
 
             print(bytesum)
 
