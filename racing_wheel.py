@@ -35,8 +35,8 @@ RACING_WHEEL_CONTROLLER_MAPS_DEFAULT = {
 RACING_WHEEL_CONTROLLER_MAPS_MARIO_KART = {
                                     'btn_menu':             'plus',
                                     'btn_change_view':      'minus',
-                                    'btn_a':                'zr',
-                                    'btn_b':                'zl',
+                                    'btn_a':                'zl',
+                                    'btn_b':                'zr',
                                     'btn_x':                'y',
                                     'btn_y':                'x',
                                     'btn_up':               'up',
