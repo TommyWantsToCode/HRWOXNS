@@ -30,7 +30,7 @@ class RacingWheel:
         self.stick = controller_state.l_stick_state
 
         # Calculates stick range
-        calibration = stick.get_calibration()
+        calibration = self.stick.get_calibration()
         self.stick_maxUp = calibration.v_center + calibration.v_max_above_center
         self.stick_maxDown = calibration.v_center - calibration.v_max_below_center
         self.stick_maxRight = calibration.h_center + calibration.h_max_above_center
