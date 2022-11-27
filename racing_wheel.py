@@ -152,7 +152,7 @@ class RacingWheel:
 
                 print("right")
 
-                steering_x_percentage = int(self.stick_center_x, self.stick_maxRight, horizontalPercentage))
+                steering_x_percentage = int(lerp(self.stick_center_x, self.stick_maxRight, horizontalPercentage))
 
             else:
 
