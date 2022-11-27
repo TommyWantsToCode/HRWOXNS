@@ -8,7 +8,9 @@ from array import array
 # Edit this array to map the steering wheel keys to nintendo switch inputs 'wheel input': 'switch input'
 # This can only change non-analog inputs (Note: Triggets on nintendo switch are not analog)
 # Switch names: y, x, b, a, r, zr, minus, plus, r_stick, l_stick, home, capture, down, up, right, left, l, zl
-RACING_WHEEL_CONTROLLER_MAPS = {
+# Racing presets:
+
+RACING_WHEEL_CONTROLLER_MAPS_DEFAULT = {
                                     'btn_menu':             'plus',
                                     'btn_change_view':      'minus',
                                     'btn_a':                'b',
@@ -27,7 +29,32 @@ RACING_WHEEL_CONTROLLER_MAPS = {
                                     'pedal_throttle':       'zr',
                                     'btn_start':            'capture',
                                     'btn_home':             'home'
-                                } 
+                                }
+
+# For mario kart because mario kart controls are weird
+RACING_WHEEL_CONTROLLER_MAPS_MARIO_KART = {
+                                    'btn_menu':             'plus',
+                                    'btn_change_view':      'minus',
+                                    'btn_a':                'zr',
+                                    'btn_b':                'zl',
+                                    'btn_x':                'y',
+                                    'btn_y':                'x',
+                                    'btn_up':               'up',
+                                    'btn_down':             'down',
+                                    'btn_left':             'left',
+                                    'btn_right':            'right',
+                                    'btn_ldb':              'l_stick',
+                                    'btn_rdb':              'r_stick',
+                                    'btn_lb':               'l',
+                                    'btn_rb':               'r',
+                                    'pedal_brake':          'b',
+                                    'pedal_throttle':       'a',
+                                    'btn_start':            'capture',
+                                    'btn_home':             'home'
+                                }
+
+# Use preset:
+RACING_WHEEL_CONTROLLER_MAPS = RACING_WHEEL_CONTROLLER_MAPS_MARIO_KART
 
 # Expected serial messages headers
 RACING_WHEEL_HEADER_CONTROL_STATE = array('B', [32, 0])
