@@ -142,13 +142,13 @@ class RacingWheel:
 
                 print("left")
 
-                horizontalPercentage = 0
+                horizontalPercentage = 0.25
 
             elif hexData[11] | hexData[10]:
 
                 print("right")
 
-                horizontalPercentage = 1
+                horizontalPercentage = 0.75
 
             else:
 
@@ -159,6 +159,7 @@ class RacingWheel:
 
             self.stick.set_h(horizontalValue)
             self.stick.set_v(verticalValue)
+            await asyncio.sleep(0)
 
             byte1 = hexData[10]
             byte2 = hexData[11]
