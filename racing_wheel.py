@@ -136,7 +136,7 @@ class RacingWheel:
 
             print(format(byte2, "040b")[-8:] + format(byte1, "040b")[-8:]  )
 
-            bytesum = (byte2 & 0b01111111) << 8
+            bytesum = ((byte2 & 0b01111111) << 8) | byte1
 
             print(format(bytesum, "040b")[-16:])
 
