@@ -137,7 +137,7 @@ class RacingWheel:
             # Reads raw steering value
             steerintByteA = hexData[10]
             steeringByteB = hexData[11]
-            steering_raw_value = int(((steeringByteB & 0b01111111) << 8) | steerintByteA) / 0b1111111
+            steering_raw_value = int(((steeringByteB & 0b01111111) << 8) | steerintByteA) / 0b111111111111111
 
             # Percentage from min to max of X axis
             steering_x_value = self.stick_center_x
