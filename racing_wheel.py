@@ -146,21 +146,21 @@ class RacingWheel:
 
                 print("left")
 
-                steering_x_percentage = int(lerp(self.stick_maxLeft, self.stick_center_x, horizontalPercentage))
+                steering_x_percentage = int(lerp(self.stick_maxLeft, self.stick_center_x, steering_raw_value))
 
             elif hexData[11] | hexData[10]:
 
                 print("right")
 
-                steering_x_percentage = int(lerp(self.stick_center_x, self.stick_maxRight, horizontalPercentage))
+                steering_x_percentage = int(lerp(self.stick_center_x, self.stick_maxRight, steering_raw_value))
 
             else:
 
                 print("center")
 
-            print(horizontalPercentage)
+            print(steering_x_percentage)
 
-            horizontalValue = int(lerp(self.stick_maxRight, self.stick_maxLeft, horizontalPercentage))
+            horizontalValue = int(lerp(self.stick_maxRight, self.stick_maxLeft, steering_x_percentage))
             verticalValue = int(lerp(self.stick_maxUp, self.stick_maxDown, 0.5))
 
             self.stick.set_h(horizontalValue)
