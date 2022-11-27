@@ -124,7 +124,7 @@ class RacingWheel:
             byte1 = hexData[10]
             byte2 = hexData[11]
 
-            print(bin(int(byte1)))
+            print( format(byte1, "040b")  )
 
             #print('read: ' + ''.join([ '%02X' %x for x in hexData[11:12]]) + ''.join([ '%02X' %x for x in hexData[10:11]]))
 
